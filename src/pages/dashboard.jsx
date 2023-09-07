@@ -1,21 +1,22 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useNavigation } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const Dashboard = () => {
-  // const token = localStorage.getItem("token")
   const token = localStorage.getItem("token")
-  const Userdata = JSON.parse(localStorage.getItem("userData"))
-  console.log("token .. ", token)
+  // const Userdata = JSON.parse(localStorage.getItem("userData"))
 
   let navigate = useNavigate()
-  // const [first, setfirst] = useState(token)
+  const [first, setfirst] = useState()
+  const [dashboardShowData, setdashboardShowData] = useState()
 
   // let navigate = useNavigate()
 
   useEffect(() => {
 
-    if (token !== null || token !== "" || token !== undefined) {
-      debugger
+    if (first !== null && first !== "" && first !== undefined) {
+      // debugger
       if (token !== null && token !== "" && token !== undefined) {
         navigate("/dashboard")
       } else {
@@ -26,6 +27,27 @@ const Dashboard = () => {
   }, [token,])
 
 
+  async function getUserData() {
+    const axiosConfig = {
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    };
+    await axios
+      .get(
+        `https://rsacarbook.jaraware.com/api/v1/getUserData`,
+        axiosConfig
+      )
+      .then((response) => {
+        // console.log("response", response)
+        setdashboardShowData(response.data.data.user)
+      })
+      .catch((error) => { toast.error(error.message); });
+  }
+  useEffect(() => {
+    getUserData()
+  }, [])
 
 
   return (
@@ -36,18 +58,18 @@ const Dashboard = () => {
             <div className="px-6">
               <div className="flex flex-wrap justify-center">
                 <div className="w-full px-4 flex justify-center">
-                  <div className="relative w-[150px]">
+                  <div className="">
                     <img
                       alt="..."
-                      src={Userdata?.image}
-                      className="shadow-md rounded-full h-auto align-middle border-none -m-16 -ml-0 lg:-ml-0 max-w-150-px"
+                      src={dashboardShowData?.profilepic || "https://cdn-icons-png.flaticon.com/512/6596/6596121.png"}
+                      className="shadow-md w-52 h-52 mx-auto rounded-full align-middle border-none"
                     />
                   </div>
                 </div>
                 <div className="w-full px-4 text-center mt-14">
                   <div className="flex justify-center py-4 lg:pt-4 pt-8">
                     <h1 className="text-3xl font-semibold leading-normal text-blueGray-700 mb-2">
-                      Welcome to {Userdata?.first_name},
+                      Welcome to {dashboardShowData?.first_name},
                     </h1>
                   </div>
                 </div>
@@ -61,7 +83,7 @@ const Dashboard = () => {
                     </h3>
                     <div className="mb-2 text-blueGray-600">
                       <i className="fas fa-university mr-2 text-lg text-blueGray-400" />
-                      {Userdata?.first_name}
+                      {dashboardShowData?.first_name}
                     </div>
                   </div>
                   <div>
@@ -70,7 +92,7 @@ const Dashboard = () => {
                     </h3>
                     <div className="mb-2 text-blueGray-600">
                       <i className="fas fa-university mr-2 text-lg text-blueGray-400" />
-                      {Userdata?.last_name}
+                      {dashboardShowData?.last_name}
                     </div>
                   </div>
                   <div>
@@ -79,19 +101,29 @@ const Dashboard = () => {
                     </h3>
                     <div className="mb-2 text-blueGray-600">
                       <i className="fas fa-university mr-2 text-lg text-blueGray-400" />
-                      {Userdata?.contact_no}
+                      {dashboardShowData?.contact_no}
                     </div>
                   </div>
                 </div>
 
                 <div className='grid gap-4'>
-                  <div>
+                  {/* <div>
                     <h3 className="text-lg font-semibold leading-normal text-blueGray-700">
                       City Number
                     </h3>
                     <div className="mb-2 text-blueGray-600">
                       <i className="fas fa-university mr-2 text-lg text-blueGray-400" />
-                      {Userdata?.city_no}
+                      {dashboardShowData?.city_no}
+                    </div>
+                  </div> */}
+
+                  <div>
+                    <h3 className="text-lg font-semibold leading-normal text-blueGray-700">
+                      Business Name is
+                    </h3>
+                    <div className="mb-2 text-blueGray-600">
+                      <i className="fas fa-university mr-2 text-lg text-blueGray-400" />
+                      {dashboardShowData?.business?.business_name || 'No Business Name'}
                     </div>
                   </div>
                   <div>
@@ -100,18 +132,10 @@ const Dashboard = () => {
                     </h3>
                     <div className="mb-2 text-blueGray-600">
                       <i className="fas fa-university mr-2 text-lg text-blueGray-400" />
-                      {Userdata.business?.business_name}
+                      {dashboardShowData?.business?.business_description || 'No Business Description'}
                     </div>
                   </div>
-                  <div>
-                    <h3 className="text-lg font-semibold leading-normal text-blueGray-700">
-                      Business Name is
-                    </h3>
-                    <div className="mb-2 text-blueGray-600">
-                      <i className="fas fa-university mr-2 text-lg text-blueGray-400" />
-                      {Userdata.business?.business_description}
-                    </div>
-                  </div>
+
                 </div>
               </div>
 

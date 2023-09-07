@@ -22,7 +22,7 @@ const layout = () => {
           <Sidebar />
           <div className='w-full'>
             <Routes>
-              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="dashboard" element={<Dashboard />} />
               <Route path="updateProfile" element={<UpdateProfile />} />
               <Route path="uplaodDocument" element={<UplaodDocument />} />
               <Route path="inquery" element={<Inquery />} />

@@ -6,10 +6,10 @@ import { toast } from "react-toastify";
 import * as Yup from "yup";
 
 const Inquery = () => {
-console.log("dfbgdfb == ", "Bearer " + localStorage.getItem("token"),)
+// console.log("dfbgdfb == ", "Bearer " + localStorage.getItem("token"),)
   const data = JSON.parse(localStorage.getItem("userInquery")) || [];
   const [inquery, setInquery] = useState(data);
-  console.log("local data", inquery);
+  // console.log("local data", inquery);
 
   // initial value in variable
   const initialSchema = {
@@ -86,7 +86,7 @@ console.log("dfbgdfb == ", "Bearer " + localStorage.getItem("token"),)
                 {({ errors, touched }) => (
                   <Form
                     action=""
-                    className="w-full px-4 lg:px-0 mx-auto grid lg:grid-cols-2 grid-cols-1 gap-4"
+                    className="w-full px-4 lg:px-0 mx-auto grid lg:grid-cols-1 grid-cols-1 gap-4"
                   >
                     <div className="pb-2 pt-4">
                       <Field
@@ -133,7 +133,7 @@ console.log("dfbgdfb == ", "Bearer " + localStorage.getItem("token"),)
           </div>
         </div>
 
-        <div className="flex flex-col pt-12">
+        {/* <div className="flex flex-col pt-12">
           <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
               <div className="overflow-hidden">
@@ -167,7 +167,7 @@ console.log("dfbgdfb == ", "Bearer " + localStorage.getItem("token"),)
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </section>
     </>
   );

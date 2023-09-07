@@ -10,17 +10,18 @@ const UpdateProfile = () => {
   const updateData = JSON.parse(localStorage.getItem("userData"));
   // const [updateProfile, setUpdateProfile] = useState(data);
   const [base64Image, setBase64Image] = useState('');
-  const [showData, setshowData] = useState('')
-  console.log("showData == ",showData)
+  const [showData, setshowData] = useState({})
+  const [getValue, setgetValue] = useState(false)
+  console.log("showData == ", showData)
 
   const initialSchema = {
-    first_name: "",
+    first_name: '',
     last_name: "",
     contact_no: "",
     image: null,
     business_name: "",
     business_description: "",
-    city_no: "",
+    city_id: "",
   };
 
   const SignUpSchema = Yup.object().shape({
@@ -68,13 +69,31 @@ const UpdateProfile = () => {
       )
       .then((response) => {
         console.log("response", response.data)
-        setshowData(response.data.data.user)
+        // setshowData(response.data.data.user)
+        
+        // debugger
+        console.log('====================================');
+        console.log("initialSchema ::",initialSchema);
+        console.log("key data ::",response.data.data.user);
+        console.log('====================================');
+        if (response.data.meta.status_code === 200 ) {
+          setgetValue(true)
+          initialSchema.first_name = response.data.data.user.first_name
+          initialSchema.last_name = response.data.data.user.last_name
+          initialSchema.contact_no = response.data.data.user.contact_no
+          initialSchema.business_name = response.data.data.user.business.business_name
+          initialSchema.business_description = response.data.data.user.business.business_description
+          initialSchema.city_id = response.data.data.user.city_id
+        }
+     
       })
       .catch((error) => { toast.error(error.message); });
   }
   useEffect(() => {
 
     getUserData()
+
+
   }, [])
 
 
@@ -95,6 +114,7 @@ const UpdateProfile = () => {
               <Formik
                 initialValues={initialSchema} // Renamed from 'UpdateData'
                 validationSchema={SignUpSchema}
+                validateOnBlur={false}                
                 onSubmit={async (values) => {
                   const formData = new FormData();
                   formData.append("business_name", values.business_name);
@@ -104,7 +124,7 @@ const UpdateProfile = () => {
                   formData.append("last_name", values.last_name);
                   formData.append("city_id", values.city_id);
                   formData.append("profile_pic", base64Image);
-                  debugger
+                  // debugger
                   const axiosConfig = {
                     headers: {
                       Accept: "application/json",
@@ -117,10 +137,11 @@ const UpdateProfile = () => {
                       formData, axiosConfig
                     )
                     .then((response) => {
-                      debugger
+                      // debugger
                       if (response.status === 200) {
-                        localStorage.setItem("userUpdate", JSON.stringify(response.data.data.user))
+                        // localStorage.setItem("userUpdate", JSON.stringify(response.data.data.user))
                         toast.success("User Update Succesfully");
+                        navigate("/dashboard");
                       }
                     })
                     .catch((error) => { toast.error(error.message); });
@@ -133,122 +154,130 @@ const UpdateProfile = () => {
               //   navigate("/dashboard");
               // }}
               >
-                {({ errors, touched }) => (
-                  <Form
-                    action=""
-                    className="w-full px-4 lg:px-0 mx-auto grid lg:grid-cols-2 grid-cols-1 gap-4"
-                  >
-                    <div className="pb-2 pt-4">
-                      <Field
-                        type="text"
-                        name="first_name"
-                        id="first_name"
-                        placeholder={showData.first_name}
-                        // placeholder="Enter Your First Name"
-                        className="block text-white w-full p-2 px-4 rounded-full text-md bg-black"
-                      />
-                      <ErrorMessage
-                        name="first_name"
-                        component="div"
-                        className="text-red-500 text-start"
-                      />
-                    </div>
-
-                    <div className="pb-2 pt-4">
-                      <Field
-                        type="text"
-                        name="last_name"
-                        id="last_name"
-                        placeholder={showData.last_name}
-                        // placeholder="Enter Your Last Name"
-                        className="block text-white w-full p-2 px-4 rounded-full text-md bg-black"
-                      />
-                      <ErrorMessage
-                        name="last_name"
-                        component="div"
-                        className="text-red-500 text-start"
-                      />
-                    </div>
-
-                    <div className="pb-2 pt-4">
-                      <Field
-                        type="text"
-                        name="contact_no"
-                        id="contact_no"
-                        placeholder={showData.contact_no}
-                        // placeholder="Enter Your Contact Number"
-                        className="block text-white w-full p-2 px-4 rounded-full text-md bg-black"
-                      />
-                      <ErrorMessage
-                        name="contact_no"
-                        component="div"
-                        className="text-red-500 text-start"
-                      />
-                    </div>
-
-                    <div className="pb-2 pt-4">
-                      <Field
-                        type="text"
-                        name="city_id"
-                        id="city_id"
-                        placeholder={showData.city_id}
-                        // placeholder="Change Your city_id"
-                        className="block text-white w-full p-2 px-4 rounded-full text-md bg-black"
-                      />
-                      <ErrorMessage
-                        name="city_id"
-                        component="div"
-                        className="text-red-500 text-start"
-                      />
-                    </div>
-
-                    <div className="pb-2 pt-4">
-                      <Field
-                        type="text"
-                        name="business_name"
-                        id="business_name"
-                        placeholder={showData.business?.business_name}
-                        // placeholder="Enter Your Business Name"
-                        className="block text-white w-full p-2 px-4 rounded-full text-md bg-black"
-                      />
-                    </div>
-
-                    <div className="pb-2 pt-4">
-                      <Field
-                        type="text"
-                        name="business_description"
-                        id="business_description"
-                        placeholder={showData.business?.business_description}
-                        // placeholder="Enter Your Business Description"
-                        className="block text-white w-full p-2 px-4 rounded-full text-md bg-black"
-                      />
-                    </div>
-
-                    <div className="pb-2 pt-4">
-                      <Field
-                        name="base64Data"
-                        id="image"
-                        className="block w-full p-2 px-4 rounded-full text-md bg-black"
-                        type="file"
-                        accept="image/*" onChange={handleFileChange}
-                      />
-                      <ErrorMessage
-                        name="image"
-                        component="div"
-                        className="text-red-500 text-start"
-                      />
-                    </div>
-
-                    <div className="p-4 flex justify-center absolute bottom-[-50px] right-0 left-0">
-                      <button
-                        type="submit"
-                        className="uppercase block w-auto py-2 px-4 text-md rounded-full text-white bg-green-700 hover:bg-green-600 focus:outline-none"
-                      >
-                        Update Profile
-                      </button>
-                    </div>
-                  </Form>
-                )}
+              {({ errors, touched, validateField, validateForm }) => (
+                  <Form className="w-full px-4 lg:px-0 mx-auto grid lg:grid-cols-2 grid-cols-1 gap-4">
+                  <div className="pb-2 pt-2">
+                    <label htmlFor="first_name" className="mb-2 font-medium block text-black text-md">
+                      First Name
+                    </label>
+                    <Field
+                      type="text"
+                      name="first_name"
+                      id="first_name"
+                      className="w-full p-2 px-4 rounded-full text-md bg-black text-white"
+                    />
+                    <ErrorMessage
+                      name="first_name"
+                      component="div"
+                      className="text-red-500 text-start"
+                    />
+                  </div>
+                
+                  <div className="pb-2 pt-2">
+                    <label htmlFor="last_name" className="mb-2 font-medium block text-black text-md">
+                      Last Name
+                    </label>
+                    <Field
+                      type="text"
+                      name="last_name"
+                      id="last_name"
+                      className="w-full p-2 px-4 rounded-full text-md bg-black text-white"
+                    />
+                    <ErrorMessage
+                      name="last_name"
+                      component="div"
+                      className="text-red-500 text-start"
+                    />
+                  </div>
+                
+                  <div className="pb-2 pt-2">
+                    <label htmlFor="contact_no" className="mb-2 font-medium block text-black text-md">
+                      Contact Number
+                    </label>
+                    <Field
+                      type="text"
+                      name="contact_no"
+                      id="contact_no"
+                      className="w-full p-2 px-4 rounded-full text-md bg-black text-white"
+                    />
+                    <ErrorMessage
+                      name="contact_no"
+                      component="div"
+                      className="text-red-500 text-start"
+                    />
+                  </div>
+                
+                  <div className="pb-2 pt-2">
+                    <label htmlFor="city_id" className="mb-2 font-medium block text-black text-md">
+                      City ID
+                    </label>
+                    <Field
+                      type="text"
+                      name="city_id"
+                      id="city_id"
+                      className="w-full p-2 px-4 rounded-full text-md bg-black text-white"
+                    />
+                    <ErrorMessage
+                      name="city_id"
+                      component="div"
+                      className="text-red-500 text-start"
+                    />
+                  </div>
+                
+                  <div className="pb-2 pt-2">
+                    <label htmlFor="business_name" className="mb-2 font-medium block text-black text-md">
+                      Business Name
+                    </label>
+                    <Field
+                      type="text"
+                      name="business_name"
+                      id="business_name"
+                      className="w-full p-2 px-4 rounded-full text-md bg-black text-white"
+                    />
+                  </div>
+                
+                  <div className="pb-2 pt-2">
+                    <label htmlFor="business_description" className="mb-2 font-medium block text-black text-md">
+                      Business Description
+                    </label>
+                    <Field
+                      type="text"
+                      name="business_description"
+                      id="business_description"
+                      className="w-full p-2 px-4 rounded-full text-md bg-black text-white"
+                    />
+                  </div>
+                
+                  <div className="pb-2 pt-2">
+                    <label htmlFor="image" className="mb-2 font-medium block text-black text-md">
+                      Image
+                    </label>
+                    <Field
+                      name="base64Data"
+                      id="image"
+                      className="block w-full p-2 px-4 rounded-full text-md bg-black text-white"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                    />
+                    <ErrorMessage
+                      name="image"
+                      component="div"
+                      className="text-red-500 text-start"
+                    />
+                  </div>
+                
+                  <div className="p-4 flex justify-center absolute bottom-[-50px] right-0 left-0">
+                    <button
+                      type="submit"
+                      className="uppercase block w-auto py-2 px-4 text-md rounded-full text-white bg-green-700 hover:bg-green-600 focus:outline-none"
+                    >
+                      Update Profile
+                    </button>
+                  </div>
+                </Form>
+                
+               )}
               </Formik>
             </div>
           </div>

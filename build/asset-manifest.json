@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/hasmukh_signuptest/static/css/main.a4838356.css",
+    "main.js": "/hasmukh_signuptest/static/js/main.e1f5ff12.js",
+    "index.html": "/hasmukh_signuptest/index.html",
+    "main.a4838356.css.map": "/hasmukh_signuptest/static/css/main.a4838356.css.map",
+    "main.e1f5ff12.js.map": "/hasmukh_signuptest/static/js/main.e1f5ff12.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a4838356.css",
+    "static/js/main.e1f5ff12.js"
+  ]
+}

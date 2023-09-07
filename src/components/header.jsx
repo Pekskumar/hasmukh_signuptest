@@ -1,19 +1,41 @@
-import React from 'react'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const Header = () => {
-  const HeaderData = JSON.parse(localStorage.getItem("userData"))
+  const [dashboardShowData, setdashboardShowData] = useState()
 
   let navigate = useNavigate()  
-
   function logout() {
     localStorage.clear();
     navigate("/")
   }
+  async function getUserData() {
+    const axiosConfig = {
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    };
+    await axios
+      .get(
+        `https://rsacarbook.jaraware.com/api/v1/getUserData`,
+        axiosConfig
+      )
+      .then((response) => {
+        // console.log("response", response)
+        setdashboardShowData(response.data.data.user)
+      })
+      .catch((error) => { toast.error(error.message); });
+  }
+  useEffect(() => {
+    getUserData()
+  }, [])
   
   return (
     <>
-      <header className="border-b md:flex md:items-center md:justify-between p-4 pb-0 shadow-md md:pb-4">
+      <header className="border-b flex items-center justify-between p-4 py-2 shadow-md ">
         {/* Logo text or image */}
         <div className="flex items-center justify-between mb-4 md:mb-0">
           <h1 className="leading-none text-2xl text-green-700">
@@ -29,18 +51,18 @@ const Header = () => {
 
         {/* Global navigation */}
         <nav>
-          <ul className="list-reset md:flex md:items-center">
-            <li className="md:ml-4">
-              <p className='text-sm'>Hello, <span className='text-green-700 font-medium'>{HeaderData?.first_name}</span></p>
+          <ul className="list-reset flex items-center">
+            <li className="ml-4">
+              <p className='text-sm'>Hello, <span className='text-green-700 font-medium'>{dashboardShowData?.first_name}</span></p>
             </li>
-            <li className="md:ml-4">  ``
+            <li className="ml-4">
               <span ><img
                 alt="..."
-                src={HeaderData?.image}
-                className="shadow-md rounded-full h-auto w-10"
+                src={dashboardShowData?.profilepic || "https://cdn-icons-png.flaticon.com/512/6596/6596121.png"}
+                className="shadow-md rounded-full h-10 w-10"
               /></span>
             </li>
-            <li className="md:ml-4">
+            <li className="ml-4">
               <button
                 // type="submit"
                 onClick={(e) => logout()}
